@@ -7,12 +7,21 @@ const sequelize = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER
   dialect: 'mysql',
 });
 
-sequelize.options.define.ModelNamePlural = true;
+ssequelize.options.define.ModelNamePlural = true;
 
 sequelize
   .authenticate()
   .then(() => {
     console.log('Connected to the database successfully.');
+
+    // Sincronize os modelos com o banco de dados
+    sequelize.sync()
+      .then(() => {
+        console.log('Database synchronized');
+      })
+      .catch((error) => {
+        console.error('Database synchronization error:', error);
+      });
   })
   .catch((err) => {
     console.error('Unable to connect to the database:', err);
