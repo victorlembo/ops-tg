@@ -7,7 +7,7 @@ const sequelize = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER
   dialect: 'mysql',
 });
 
-ssequelize.options.define.ModelNamePlural = true;
+sequelize.options.define.ModelNamePlural = true;
 
 sequelize
   .authenticate()
