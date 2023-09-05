@@ -1,17 +1,8 @@
 const User = require('../models/User');
-const bcrypt = require('bcrypt'); 
-
 const path = require('path');
 
 exports.createUser = async (req, res) => {
   try {
-    // Gere um sal aleatório para usar na criptografia
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-
-    // Use o sal gerado e a senha do usuário para criar um hash seguro
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
     let profileImagePath = null;
 
     // Verifique se uma imagem de perfil foi enviada
@@ -32,7 +23,7 @@ exports.createUser = async (req, res) => {
     const newUser = await User.create({
       name: req.body.name,
       email: req.body.email,
-      password: hashedPassword,
+      password: req.body.password, // Armazene a senha em texto simples
       profile_image: profileImagePath,
     });
 
@@ -43,6 +34,7 @@ exports.createUser = async (req, res) => {
     return res.status(500).json({ error: 'Server error' });
   }
 };
+
 
 
 
