@@ -77,7 +77,7 @@ exports.createUser = async (req, res) => {
       profile_image: profileImagePath,
     });
 
-    return res.status(200).json({ newUser });
+    res.redirect('/index.html');
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Server error' });
