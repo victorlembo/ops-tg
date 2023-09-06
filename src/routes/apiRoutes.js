@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const cors = require('cors'); 
+const cors = require('cors');
 const fileUpload = require('express-fileupload');
 
 router.use(cors());
@@ -11,6 +11,13 @@ router.use(fileUpload());
 const UserController = require('../controllers/UserController');
 const JobController = require('../controllers/JobController');
 const CategoryController = require('../controllers/CategoryController');
+
+
+router.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
+
 
 // User Routes
 router.post('/register', UserController.createUser);
@@ -30,6 +37,8 @@ router.get('/jobs/lowestValue', JobController.getLowestValue);
 router.get('/category/:categoryId', CategoryController.getCategoryById);
 router.get('/categories', CategoryController.getAllCategories);
 
-
+// Login route
+router.post('/login', UserController.login);
+router.post('/logout', UserController.logout);
 
 module.exports = router;

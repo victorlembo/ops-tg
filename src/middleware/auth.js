@@ -1,20 +1,21 @@
-// middleware/auth.js
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+dotenv.config(); 
 
-const authenticateUser = (req, res, next) => {
+function authenticateToken(req, res, next) {
   const token = req.header('Authorization');
 
   if (!token) {
-    return res.status(401).json({ message: 'Authentication required' });
+    return res.status(401).json({ error: 'Token não fornecido' });
   }
 
-  try {
-    const decoded = jwt.verify(token, 'your-secret-key');
-    req.user = decoded.user;
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Token inválido' });
+    }
+    req.user = user;
     next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Invalid token' });
-  }
-};
+  });
+}
 
-module.exports = authenticateUser;
+module.exports = authenticateToken;

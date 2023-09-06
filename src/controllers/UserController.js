@@ -1,41 +1,93 @@
 const User = require('../models/User');
 const path = require('path');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+
+dotenv.config();
+
+
+exports.logout = (req, res) => {
+
+  res.clearCookie('token');
+  res.clearCookie('isUserLoggedIn');
+
+  res.redirect('/index.html'); 
+};
+
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Verifique se o usuário existe no banco de dados
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(401).json({ error: 'Credenciais inválidas' });
+    }
+
+    // Verifique a senha
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Credenciais inválidas' });
+    }
+
+    // Crie um token de autenticação
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Adicione o token como cookie (opcional, se preferir usar cookies)
+    res.cookie('token', token, { httpOnly: true }); // Isso é opcional, você pode ajustar conforme necessário
+    res.cookie('isUserLoggedIn', 'true');
+
+    // Redirecione o usuário para a página "dashboard.html"
+    res.redirect('/dashboard.html');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro no servidor' });
+  }
+};
+
 
 exports.createUser = async (req, res) => {
   try {
     let profileImagePath = null;
 
-    // Verifique se uma imagem de perfil foi enviada
+    console.log(req.files);
+    // Check if a profile image was uploaded
     if (req.files && req.files.profile_image) {
       const profileImage = req.files.profile_image;
 
-      // Defina o caminho onde a imagem de perfil será armazenada
-      const profileImageName = `${Date.now()}-${profileImage.name}`;
-      const profileImageUploadPath = path.join(__dirname, 'uploads', profileImageName);
+      // Set the path where the profile image will be stored inside the "public/uploads" folder
+      const profileImageName = `${profileImage.name}`;
 
-      // Faça o upload da imagem de perfil para o servidor
+      const profileImageUploadPath = path.join(__dirname, '..', '..', 'public', 'uploads', profileImageName);
+
+      // Upload the profile image to the server
       await profileImage.mv(profileImageUploadPath);
 
-      // Defina o caminho da imagem de perfil no banco de dados
-      profileImagePath = `/uploads/${profileImageName}`;
+      // Set the profile image path
+      profileImagePath = `${profileImageName}`;
     }
 
+    // Use bcrypt to hash the password
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    // Insert the new user into the database using Sequelize
     const newUser = await User.create({
       name: req.body.name,
       email: req.body.email,
-      password: req.body.password, // Armazene a senha em texto simples
+      password: hashedPassword,
       profile_image: profileImagePath,
     });
 
-    return res.redirect('/');
-    
+    return res.status(200).json({ newUser });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Server error' });
   }
 };
-
-
 
 
 exports.getAllUsers = async (req, res) => {
