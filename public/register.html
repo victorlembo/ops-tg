@@ -7,7 +7,6 @@
     <title>Oportunidade Sorocaba</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="assets/img/favico.ico">
 
     <!-- CSS here -->
@@ -90,7 +89,7 @@
                                 </div>
                                 <!-- Header-btn -->
                                 <div class="header-btn d-none f-right d-lg-block">
-                                    <a href="./login.html" class="btn head-btn1">Entrar</a>
+                                    <a href="login.html" class="btn head-btn1">Entrar</a>
                                 </div>
                             </div>
                         </div>
@@ -106,17 +105,17 @@
     </header>
     <main>
         <!-- Formulário de Cadastro de Usuário -->
-        <div class="container">
+        <div class="container p-5">
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header">Cadastrar Usuário</div>
+                        <div class="card-header">Cadastrar Anunciante</div>
     
                         <div class="card-body">
-                            <form method="POST" action="/register">
+                            <form method="POST" action="/api/register" enctype="multipart/form-data">
                                 <!-- Campo de Nome -->
                                 <div class="form-group">
-                                    <label for="name">Nome</label>
+                                    <label for="name">Nome do Anunciante</label>
                                     <input type="text" class="form-control" id="name" name="name" required>
                                 </div>
     
@@ -140,6 +139,7 @@
     
                                 <!-- Botão de Envio -->
                                 <button type="submit" class="btn btn-primary">Cadastrar</button>
+                                
                             </form>
                         </div>
                     </div>

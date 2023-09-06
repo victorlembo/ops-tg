@@ -1,28 +1,37 @@
 // Add your JavaScript code here
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Script loaded');
-  });
+  console.log('Script loaded');
+});
 
-  function fetchUserName(userId) {
-    return fetch(`/api/user/${userId}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.user) {
-          return data.user.name;
-        } else {
-          return 'Unknown User';
-        }
-      })
-      .catch(error => {
-        console.error(error);
+function fetchUserName(userId) {
+  return fetch(`/api/user/${userId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.user) {
+        return data.user.name;
+      } else {
         return 'Unknown User';
-      });
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      return 'Unknown User';
+    });
+}
+
+
+async function fetchUserProfileImage(userId) {
+  try {
+    const response = await fetch(`/api/user/${userId}`);
+    const userData = await response.json();
+    return userData.user.profile_image;
+  } catch (error) {
+    console.error(error);
+    return ''; // Return an empty string if there's an error
   }
+}
 
-  
-
-  // Função para buscar dados dos trabalhos do servidor
- async function fetchJobs() {
+async function fetchJobs() {
   try {
     const response = await fetch('/api/jobs/recent');
     const data = await response.json();
@@ -35,26 +44,29 @@ document.addEventListener('DOMContentLoaded', () => {
       // Fetch the user's name using the user ID
       const userName = await fetchUserName(job.id_user);
 
+      // Fetch the user's profile image using the user ID
+      const profileImage = await fetchUserProfileImage(job.id_user);
+
       jobItem.innerHTML = `
-        <div class="job-items">
-          <div class="company-img">
-            <a href="#"><img src="assets/img/icon/job-list1.png" alt=""></a>
+          <div class="job-items">
+            <div class="company-img">
+              <a href="#"><img src="uploads/${profileImage}" alt=""></a>
+            </div>
+            <div class="job-tittle job-tittle2">
+              <h4>${job.title}</h4>
+              </a>
+              <ul>
+                <li>${userName}</li> 
+                <li><i class="fas fa-map-marker-alt"></i>${job.location}</li>
+                <li>R$ ${job.budget}</li>
+              </ul>
+            </div>
           </div>
-          <div class="job-tittle job-tittle2">
-            <h4>${job.title}</h4>
-            </a>
-            <ul>
-              <li>${userName}</li> 
-              <li><i class="fas fa-map-marker-alt"></i>${job.location}</li>
-              <li>R$ ${job.budget}</li>
-            </ul>
+          <div class="items-link items-link2 f-right">
+            <a href="job_details.html?jobId=${job.id}">Detalhes</a>
+            <span>${getTimeAgo(job.created_at)}</span>
           </div>
-        </div>
-        <div class="items-link items-link2 f-right">
-          <a href="job_details.html?jobId=${job.id}">Detalhes</a>
-          <span>${getTimeAgo(job.created_at)}</span>
-        </div>
-      `;
+        `;
 
       jobList.appendChild(jobItem);
     }
@@ -67,44 +79,45 @@ document.addEventListener('DOMContentLoaded', () => {
 fetchJobs();
 
 
+function getTimeAgo(createdAt) {
+  const now = new Date();
+  const createdDate = new Date(createdAt);
+  const timeDiffInSeconds = Math.floor((now - createdDate) / 1000);
 
-
-
-
-
-  function getTimeAgo(createdAt) {
-    const now = new Date();
-    const createdDate = new Date(createdAt);
-    const timeDiffInSeconds = Math.floor((now - createdDate) / 1000);
-  
-    if (timeDiffInSeconds < 86400) {
-      return "Publicado hoje";
-    }
-  
-    const timeDiffInDays = Math.floor(timeDiffInSeconds / 86400);
-    return `Publicado há ${timeDiffInDays} dia${timeDiffInDays !== 1 ? "s" : ""}`;
-  }
-  
-  
-
-     
-  async function fetchJobCount() {
-    try {
-      const response = await fetch('/api/jobs/count');
-      const data = await response.json();
-      return data.count;
-    } catch (error) {
-      console.error(error);
-      return 0;
-    }
+  if (timeDiffInSeconds < 86400) {
+    return "Publicado hoje";
   }
 
-  // // Função para atualizar o contador de trabalhos na página
-  // async function updateJobCount() {
-  //   const jobCountElement = document.getElementById('jobCount');
-  //   const jobCount = await fetchJobCount();
-  //   jobCountElement.textContent = `Total de oportunidades: ${jobCount}`;
-  // }
+  const timeDiffInDays = Math.floor(timeDiffInSeconds / 86400);
+  return `Publicado há ${timeDiffInDays} dia${timeDiffInDays !== 1 ? "s" : ""}`;
+}
 
-  // // Chama a função para atualizar o contador ao carregar a página
-  // updateJobCount();
+function logout() {
+  // Envie uma solicitação POST para a rota de logout
+  fetch('/api/logout', {
+    method: 'POST',
+    credentials: 'same-origin', // Para enviar cookies
+  })
+    .then((response) => {
+      if (response.redirected) {
+        // O servidor redirecionou para a página de login
+        window.location.href = response.url;
+      }
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer logout:', error);
+    });
+}
+
+
+async function fetchJobCount() {
+  try {
+    const response = await fetch('/api/jobs/count');
+    const data = await response.json();
+    return data.count;
+  } catch (error) {
+    console.error(error);
+    return 0;
+  }
+}
+

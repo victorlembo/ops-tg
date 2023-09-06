@@ -91,8 +91,6 @@
                 </div>
                 <!-- Header-btn -->
                 <div class="header-btn d-none f-right d-lg-block">
-                  <a href="./register.html" class="btn head-btn1">Cadastrar</a>
-                  <a href="./login.html" class="btn head-btn1">Entrar</a>
                 </div>
               </div>
             </div>
@@ -119,7 +117,7 @@
             <div class="single-job-items mb-50">
               <div class="job-items">
                 <div class="company-img company-img-details">
-                  <a href="#"><img src="assets/img/icon/job-list1.png" alt=""></a>
+                  <a href="#"><img id="userImage" alt=""></a>
                 </div>
                 <div class="job-tittle">
                   <a href="#">
@@ -298,6 +296,7 @@
               if (userData.user) {
                 const userName = userData.user.name;
                 const userEmail = userData.user.email;
+                const userImage = userData.user.profile_image;
 
                 // Update the DOM elements with the job and user data
                 document.getElementById('jobTitle').textContent = job.title;
@@ -309,6 +308,8 @@
                 document.getElementById('jobSkills').textContent = job.skills;
                 document.getElementById('jobCompany').textContent = userName;
                 document.getElementById('jobEmail').textContent = userEmail;
+                const userImageTag = document.getElementById('userImage');
+                userImageTag.setAttribute('src', `uploads/${userImage}`);
 
               } else {
                 // Handle the case where the user data is not found
@@ -335,6 +336,7 @@
       return new Date(dateString).toLocaleDateString('pt-BR', options);
     }
   </script>
+  <script src="menu.js"></script>
 
 
 </body>
