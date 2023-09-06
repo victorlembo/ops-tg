@@ -27,7 +27,7 @@ exports.login = async (req, res) => {
     }
 
 
-    if (!passwordMatch) {
+    if (!password) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
