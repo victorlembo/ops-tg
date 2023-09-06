@@ -1,6 +1,5 @@
 const User = require('../models/User');
 const path = require('path');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 
@@ -27,8 +26,6 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
-    // Verifique a senha
-    const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
@@ -71,14 +68,12 @@ exports.createUser = async (req, res) => {
       profileImagePath = `${profileImageName}`;
     }
 
-    // Use bcrypt to hash the password
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     // Insert the new user into the database using Sequelize
     const newUser = await User.create({
       name: req.body.name,
       email: req.body.email,
-      password: hashedPassword,
+      password: req.body.password,
       profile_image: profileImagePath,
     });
 
