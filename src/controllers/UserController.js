@@ -11,6 +11,7 @@ exports.logout = (req, res) => {
 
   res.clearCookie('token');
   res.clearCookie('isUserLoggedIn');
+  res.clearCookie('userId');
 
   res.redirect('/index.html'); 
 };
@@ -37,6 +38,8 @@ exports.login = async (req, res) => {
     // Adicione o token como cookie (opcional, se preferir usar cookies)
     res.cookie('token', token, { httpOnly: true }); // Isso é opcional, você pode ajustar conforme necessário
     res.cookie('isUserLoggedIn', 'true');
+    res.cookie('userId', user.id);
+
 
     // Redirecione o usuário para a página "dashboard.html"
     res.redirect('/dashboard.html');
@@ -77,7 +80,7 @@ exports.createUser = async (req, res) => {
       profile_image: profileImagePath,
     });
 
-    res.redirect('/index.html');
+    res.redirect('/login.html');
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Server error' });
