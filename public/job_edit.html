@@ -88,57 +88,79 @@
                                         </ul>
                                     </nav>
                                 </div>
-                                <!-- Header-btn -->
                                 <div class="header-btn d-none f-right d-lg-block">
-                                    <a href="./register.html" class="btn head-btn1">Cadastrar</a>
+
                                 </div>
                             </div>
-                        </div>
-                        <!-- Mobile Menu -->
-                        <div class="col-12">
-                            <div class="mobile_menu d-block d-lg-none"></div>
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Header End -->
+            <!-- Header End -->
     </header>
     <main>
-        <!-- Formulário de Cadastro de Usuário -->
+        <!-- Formulário de Edição de Vaga -->
         <div class="container p-5">
             <div class="row justify-content-center">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">Entrar</div>
-    
+                        <div class="card-header">Editar Oportunidade</div>
                         <div class="card-body">
-                            <form method="POST" action="/api/login" enctype="multipart/form-data">
-                              
-                                <!-- Campo de Email -->
+                            <form method="POST" action="" enctype="multipart/form-data" id="editJobForm">
+                                <!-- Campo de Título da Vaga -->
                                 <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <label for="title">Título da Vaga</label>
+                                    <input type="text" class="form-control" id="title" name="title" required>
                                 </div>
     
-                                <!-- Campo de Senha -->
+                                <!-- Campo de Descrição da Vaga -->
                                 <div class="form-group">
-                                    <label for="password">Senha</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <label for="description">Descrição da Vaga</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
                                 </div>
     
+                                <!-- Campo de Orçamento -->
+                                <div class="form-group">
+                                    <label for="budget">Orçamento</label>
+                                    <input type="text" class="form-control" id="budget" name="budget" required>
+                                </div>
+    
+                                <!-- Campo de Habilidades Necessárias -->
+                                <div class="form-group">
+                                    <label for="skills">Habilidades Necessárias</label>
+                                    <input type="text" class="form-control" id="skills" name="skills" required>
+                                </div>
+    
+                                <!-- Campo de Localização -->
+                                <div class="form-group">
+                                    <label for="location">Localização</label>
+                                    <input type="text" class="form-control" id="location" name="location" required>
+                                </div>
+    
+                                <!-- Campo de Prazo -->
+                                <div class="form-group">
+                                    <label for="deadline">Prazo</label>
+                                    <input type="date" class="form-control" id="deadline" name="deadline" required>
+                                </div>
+    
+                                <!-- Campo de ID do Job (Oculto) -->
+                                <input type="hidden" id="jobId" name="jobId">
                                 <!-- Botão de Envio -->
-                                <button type="submit" class="btn btn-primary">Entrar</button>
-                                
+                                <div>
+                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Fim do Formulário de Cadastro de Usuário -->
+        <!-- Fim do Formulário de Edição de Vaga -->
     </main>
-
     <footer id="footer">
         <div class="footer-area footer-bg footer-padding">
             <div class="container">
@@ -171,10 +193,9 @@
                                             Copyright &copy;
                                             <script>document.write(new Date().getFullYear());</script> All rights
                                             reserved 
-                                        </p>
                                     </div>
                                 </div>
-                                
+                             
                             </div>
                         </div>
                     </div>
@@ -216,6 +237,69 @@
     <!-- Jquery Plugins, main Jquery -->
     <script src="./assets/js/plugins.js"></script>
     <script src="./assets/js/main.js"></script>
+    <script src="script.js"> </script>
+    <script src="menu.js"></script>
+    <script>
+        // Função para buscar o jobId da URL
+        function getJobIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('jobId');
+        }
+
+        // Preencha o campo jobId com o ID do job da URL
+        const jobId = getJobIdFromURL();
+        if (jobId) {
+            document.getElementById('jobId').value = jobId;
+        }
+    </script>
+    <script>
+        // Função para buscar os dados da requisição e preencher o formulário
+        async function fetchDataAndPopulateForm() {
+            // Obtenha o ID do job da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobId = urlParams.get('jobId');
+
+            // Faça uma requisição para obter os dados do job com o ID
+            const response = await fetch(`/api/job/${jobId}`);
+            const data = await response.json();
+
+            if (data.job) {
+                // Preencha os campos do formulário com os dados obtidos
+                document.getElementById('title').value = data.job.title;
+                document.getElementById('description').value = data.job.description;
+                document.getElementById('budget').value = data.job.budget;
+                document.getElementById('skills').value = data.job.skills;
+                document.getElementById('location').value = data.job.location;
+                document.getElementById('deadline').value = data.job.deadline;
+                document.getElementById('id_user').value = data.job.id_user;
+            }
+        }
+
+        // Chame a função para preencher o formulário quando a página for carregada
+        fetchDataAndPopulateForm();
+    </script>
+    <script>
+         // Preenche o campo oculto com o ID do job
+        document.getElementById("jobId").value = jobId;
+
+        // Define o atributo 'action' do formulário com o URL correto
+        document.getElementById("editJobForm").action = `/api/job/update/${jobId}`;
+    </script>
+    <script>
+        // Função para obter o valor de um cookie pelo nome
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Lê o valor do cookie 'userId' e define no campo oculto 'id_user'
+        const userId = getCookie('userId');
+        if (userId) {
+            document.getElementById('id_user').value = userId;
+        }
+    </script>
+
 
 </body>
 

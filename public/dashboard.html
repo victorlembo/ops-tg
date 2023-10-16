@@ -10,6 +10,51 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="shortcut icon" type="image/x-icon" href="assets/img/favico.ico">
+  <style>
+    /* Estilo para a mensagem na caixa de confirmação */
+    .confirmation-message {
+      font-size: 16px;
+      color: #0B1C39;
+      /* Cor do texto */
+    }
+
+    /* Estilo para a caixa de confirmação */
+    .confirmation-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      text-align: center;
+    }
+
+    /* Estilo para o botão "OK" na caixa de confirmação */
+    .confirmation-ok-button {
+      background-color: #242B5E;
+      /* Cor de fundo do botão */
+      color: white;
+      /* Cor do texto do botão */
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    /* Estilo para o botão "Cancelar" na caixa de confirmação */
+    .confirmation-cancel-button {
+      background-color: #FB246A;
+      /* Cor de fundo do botão */
+      color: white;
+      /* Cor do texto do botão */
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 
   <!-- CSS here -->
   <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
@@ -54,7 +99,7 @@
   <!-- Preloader Start -->
   <header>
     <!-- Header Start -->
-    <div class="header-area header-transparrent">
+    <div class="header-area header-transparrent pt-20">
       <div class="headder-top header-sticky">
         <div class="container">
           <div class="row align-items-center">
@@ -107,12 +152,19 @@
   </header>
   <main>
 
-
     <!-- Job List Area Start -->
     <div class="job-listing-area pt-120 pb-120">
       <div class="container">
         <div class="row">
-
+          <div class="col-xl-12">
+            <div class="items-link items-link2 f-right" >
+              <a href="job_register.html">+ Cadastrar Nova Oportunidade</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
           <!-- Right content -->
           <div class="col-xl-12">
             <!-- Featured_job_start -->
@@ -126,7 +178,7 @@
         </div>
 
         <!-- Pagination Start  -->
-        <div class="pagination-area pb-115 text-center">
+        <div class="pagination-area pb-50 text-center">
           <div class="container">
             <div class="row">
               <div class="col-xl-12">
@@ -149,7 +201,6 @@
       </div>
     </div>
     <!-- Job List Area End -->
-
 
 
   </main>
@@ -181,23 +232,13 @@
               <div class="row d-flex justify-content-between align-items-center">
                 <div class="col-xl-10 col-lg-10 ">
                   <div class="footer-copy-right">
-                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    <p>
                       Copyright &copy;
-                      <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is
-                      made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com"
-                        target="_blank">Colorlib</a>
-                      <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                      <script>document.write(new Date().getFullYear());</script> All rights reserved
                     </p>
                   </div>
                 </div>
-                <div class="col-xl-2 col-lg-2">
-                  <div class="footer-social f-right">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fas fa-globe"></i></a>
-                    <a href="#"><i class="fab fa-behance"></i></a>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
@@ -241,6 +282,127 @@
   <script src="./assets/js/plugins.js"></script>
   <script src="./assets/js/main.js"></script>
   <script src="script.js"> </script>
+
+  <script>
+    async function fetchJobsUserId(userId) {
+      try {
+        const response = await fetch(`/api/jobs/byUser/${userId}`);
+        const data = await response.json();
+        const jobList = document.getElementById('jobList');
+
+        // Verifique se não há vagas
+        if (data.jobs.length === 0) {
+          displayNoJobsMessage();
+        } else {
+          for (const job of data.jobs) {
+            const jobItem = document.createElement('div');
+            jobItem.classList.add('single-job-items', 'mb-30');
+
+            // Fetch the user's name using the user ID
+            const userName = await fetchUserName(job.id_user);
+
+            // Fetch the user's profile image using the user ID
+            const profileImage = await fetchUserProfileImage(job.id_user);
+
+            jobItem.innerHTML = `
+                    <div class="job-items">
+                        <div class="company-img">
+                            <a href="#"><img src="uploads/${profileImage}" alt=""></a>
+                        </div>
+                        <div class="job-tittle job-tittle2">
+                            <h4>${job.title}</h4>
+                            </a>
+                            <ul>
+                                <li>${userName}</li> 
+                                <li><i class="fas fa-map-marker-alt"></i>${job.location}</li>
+                                <li>R$ ${job.budget}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="items-link items-link2 f-right">
+                        <a href="job_edit.html?jobId=${job.id}">Editar</a>
+                        <a href="#" class="delete-job" data-job-id="${job.id}" onclick="deleteJob(event)">Excluir</a>
+                    </div>
+                `;
+
+            jobList.appendChild(jobItem);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Função para exibir a mensagem quando não houver vagas
+    function displayNoJobsMessage() {
+      const jobList = document.getElementById('jobList');
+      const messageDiv = document.createElement('div');
+
+      // Aplicando estilos para centralizar a mensagem
+      messageDiv.style.padding = '20px';
+      messageDiv.style.textAlign = 'center';
+
+      // Adicionando a mensagem com um link para cadastrar
+      messageDiv.innerHTML = "Você ainda não tem vagas cadastradas. Clique <a href='job_register.html' style='color: blue; text-decoration: underline;'>aqui</a> para cadastrar!";
+
+      jobList.innerHTML = ''; // Limpa qualquer conteúdo anterior
+      jobList.appendChild(messageDiv); // Adiciona a mensagem centralizada
+    }
+
+    fetchJobsUserId();
+
+  </script>
+  <script>
+    function deleteJob(event) {
+      event.preventDefault();
+
+      const jobId = event.target.getAttribute('data-job-id');
+
+      // Substitua a função confirm padrão pelo seu estilo personalizado
+      const confirmationDiv = document.createElement('div');
+      confirmationDiv.classList.add('confirmation-box');
+      confirmationDiv.innerHTML = `
+  <p class="confirmation-message">Tem certeza de que deseja excluir esta vaga?</p>
+  <button class="confirmation-ok-button" id="confirmation-ok">Sim</button>
+  <button class="confirmation-cancel-button" id="confirmation-cancel">Cancelar</button>
+`;
+
+      document.body.appendChild(confirmationDiv);
+
+
+      // Adicione um ouvinte de evento para os botões personalizados
+      const okButton = document.getElementById('confirmation-ok');
+      const cancelButton = document.getElementById('confirmation-cancel');
+
+      okButton.addEventListener('click', () => {
+        // O usuário confirmou
+        document.body.removeChild(confirmationDiv);
+
+        fetch(`/api/jobs/delete/${jobId}`, {
+          method: 'DELETE',
+        })
+          .then(response => {
+            if (response.status === 204) {
+              alert('Vaga excluída com sucesso!');
+              window.location.reload();
+            } else if (response.status === 404) {
+              alert('Vaga não encontrado.');
+            } else {
+              alert('Erro do servidor ao excluir vaga.');
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            alert('Erro ao processar a solicitação de exclusão.');
+          });
+      });
+
+      cancelButton.addEventListener('click', () => {
+        // O usuário cancelou
+        document.body.removeChild(confirmationDiv);
+      });
+    }
+  </script>
 
 
 </body>

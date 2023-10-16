@@ -88,10 +88,13 @@
                                         </ul>
                                     </nav>
                                 </div>
-                                <!-- Header-btn -->
                                 <div class="header-btn d-none f-right d-lg-block">
-                                    <a href="./register.html" class="btn head-btn1">Cadastrar</a>
+
                                 </div>
+                            </div>
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
                             </div>
                         </div>
                         <!-- Mobile Menu -->
@@ -105,40 +108,66 @@
         <!-- Header End -->
     </header>
     <main>
-        <!-- Formulário de Cadastro de Usuário -->
+        <!-- Formulário de Cadastro de Vaga -->
         <div class="container p-5">
             <div class="row justify-content-center">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="card">
-                        <div class="card-header">Entrar</div>
-    
+                        <div class="card-header">Cadastrar Nova Oportunidade</div>
+
                         <div class="card-body">
-                            <form method="POST" action="/api/login" enctype="multipart/form-data">
-                              
-                                <!-- Campo de Email -->
+                            <form method="POST" action="/api/job" enctype="multipart/form-data">
+                                <!-- Campo de Título da Vaga -->
                                 <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <label for="title">Título da Vaga</label>
+                                    <input type="text" class="form-control" id="title" name="title" required>
                                 </div>
-    
-                                <!-- Campo de Senha -->
+
+                                <!-- Campo de Descrição da Vaga -->
                                 <div class="form-group">
-                                    <label for="password">Senha</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <label for="description">Descrição da Vaga</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
                                 </div>
-    
+
+                                <!-- Campo de Orçamento -->
+                                <div class="form-group">
+                                    <label for="budget">Orçamento</label>
+                                    <input type="text" class="form-control" id="budget" name="budget" required>
+                                </div>
+
+                                <!-- Campo de Habilidades Necessárias -->
+                                <div class="form-group">
+                                    <label for="skills">Habilidades Necessárias</label>
+                                    <input type="text" class="form-control" id="skills" name="skills" required>
+                                </div>
+
+                                <!-- Campo de Localização -->
+                                <div class="form-group">
+                                    <label for="location">Localização</label>
+                                    <input type="text" class="form-control" id="location" name="location" required>
+                                </div>
+
+                                <!-- Campo de Prazo -->
+                                <div class="form-group">
+                                    <label for="deadline">Prazo</label>
+                                    <input type="date" class="form-control" id="deadline" name="deadline" required>
+                                </div>
+
+                                <!-- Campo de ID do Usuário (Oculto, se necessário) -->
+                                <input type="hidden" id="id_user" name="id_user">
+
+                                <input type="hidden" id="created_at" name="created_at">
+
                                 <!-- Botão de Envio -->
-                                <button type="submit" class="btn btn-primary">Entrar</button>
-                                
+                                <button type="submit" class="btn btn-primary">Cadastrar Vaga</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Fim do Formulário de Cadastro de Usuário -->
+        <!-- Fim do Formulário de Cadastro de Vaga -->
     </main>
-
     <footer id="footer">
         <div class="footer-area footer-bg footer-padding">
             <div class="container">
@@ -174,7 +203,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                
+                            
                             </div>
                         </div>
                     </div>
@@ -216,7 +245,22 @@
     <!-- Jquery Plugins, main Jquery -->
     <script src="./assets/js/plugins.js"></script>
     <script src="./assets/js/main.js"></script>
+    <script src="script.js"> </script>
+    <script src="menu.js"></script>
+    <script>
+        // Função para obter o valor de um cookie pelo nome
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
 
+        // Lê o valor do cookie 'userId' e define no campo oculto 'id_user'
+        const userId = getCookie('userId');
+        if (userId) {
+            document.getElementById('id_user').value = userId;
+        }
+    </script>
 </body>
 
 </html>

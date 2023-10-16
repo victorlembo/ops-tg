@@ -7,10 +7,8 @@ function renderMenu() {
   
     if (isUserLoggedIn) {
       // Se o usuário estiver logado, renderize o menu com o link para o painel
-      headerBtn.innerHTML = `
-        <a href="./dashboard.html" class="btn head-btn1">Meu Painel</a>
-        <a href="#" class="btn head-btn1" onclick="logout()">Sair</a>
-        `;
+      headerBtn.innerHTML = `<a href="./dashboard.html" class="btn head-btn1">Meu Painel</a>
+        <a href="#" class="btn head-btn1" onclick="logout()">Sair</a>`;
     } else {
       // Se o usuário não estiver logado, renderize o menu com os links de cadastro e login
       headerBtn.innerHTML = `

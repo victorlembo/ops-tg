@@ -54,7 +54,7 @@
   <!-- Preloader Start -->
   <header>
     <!-- Header Start -->
-    <div class="header-area header-transparrent">
+    <div class="header-area header-transparrent pt-20">
       <div class="headder-top header-sticky">
         <div class="container">
           <div class="row align-items-center">
@@ -91,62 +91,76 @@
                 </div>
                 <div class="header-btn d-none f-right d-lg-block">
 
-              </div>
-            </div>
-            <!-- Mobile Menu -->
-            <div class="col-12">
-              <div class="mobile_menu d-block d-lg-none"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Header End -->
-  </header>
-  <main>
-
-
-    <!-- Job List Area Start -->
-    <div class="job-listing-area pt-120 pb-120">
-      <div class="container">
-        <div class="row">
-
-          <!-- Right content -->
-          <div class="col-xl-12">
-            <!-- Featured_job_start -->
-            <section class="featured-job-area">
-              <div class="container">
-                <div class="job-list" id="jobList"></div>
-              </div>
-            </section>
-            <!-- Featured_job_end -->
-          </div>
-        </div>
-
-        <!-- Pagination Start  -->
-        <div class="pagination-area pb-115 text-center">
-          <div class="container">
-            <div class="row">
-              <div class="col-xl-12">
-                <div class="single-wrap d-flex justify-content-center">
-                  <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                      <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                      <li class="page-item"><a class="page-link" href="#">02</a></li>
-                      <li class="page-item"><a class="page-link" href="#">03</a></li>
-                      <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a>
-                      </li>
-                    </ul>
-                  </nav>
                 </div>
               </div>
+              <!-- Mobile Menu -->
+              <div class="col-12">
+                <div class="mobile_menu d-block d-lg-none"></div>
+              </div>
             </div>
           </div>
         </div>
-        <!-- Pagination End  -->
+      </div>
+      <!-- Header End -->
+  </header>
+  <div class="support-company-area fix pt-20">
+    <div class="online-cv cv-bg section-overly pt-90 pb-120" data-background="assets/img/gallery/cv_bg.jpg">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-xl-10">
+            <div class="cv-caption text-center">
+              <p class="pera1">Oportunidades Sorocaba</p>
+              <p class="pera2">Encontre oportunidades e entregue solucoes!</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- Job List Area End -->
+  </div>
+
+
+
+  <!-- Job List Area Start -->
+  <div class="job-listing-area pt-50 pb-50">
+    <div class="container">
+      <div class="row">
+
+        <!-- Right content -->
+        <div class="col-xl-12">
+          <!-- Featured_job_start -->
+          <section class="featured-job-area">
+            <div class="container">
+              <div class="job-list" id="jobList"></div>
+            </div>
+          </section>
+          <!-- Featured_job_end -->
+        </div>
+      </div>
+
+      <!-- Pagination Start  -->
+      <div class="pagination-area pb-50 text-center">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="single-wrap d-flex justify-content-center">
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-start">
+                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                    <li class="page-item"><a class="page-link" href="#">02</a></li>
+                    <li class="page-item"><a class="page-link" href="#">03</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Pagination End  -->
+    </div>
+  </div>
+  <!-- Job List Area End -->
 
 
 
@@ -179,23 +193,13 @@
               <div class="row d-flex justify-content-between align-items-center">
                 <div class="col-xl-10 col-lg-10 ">
                   <div class="footer-copy-right">
-                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    <p>
                       Copyright &copy;
-                      <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is
-                      made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com"
-                        target="_blank">Colorlib</a>
-                      <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                      <script>document.write(new Date().getFullYear());</script> All rights reserved
                     </p>
                   </div>
                 </div>
-                <div class="col-xl-2 col-lg-2">
-                  <div class="footer-social f-right">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fas fa-globe"></i></a>
-                    <a href="#"><i class="fab fa-behance"></i></a>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
@@ -241,7 +245,54 @@
   <script src="./script.js"> </script>
   <script src="menu.js"></script>
 
+  <script>
+    async function fetchJobs() {
+      try {
+        const response = await fetch('/api/jobs/recent');
+        const data = await response.json();
+        const jobList = document.getElementById('jobList');
 
+        for (const job of data.jobs) {
+          const jobItem = document.createElement('div');
+          jobItem.classList.add('single-job-items', 'mb-30');
+
+          // Fetch the user's name using the user ID
+          const userName = await fetchUserName(job.id_user);
+
+          // Fetch the user's profile image using the user ID
+          const profileImage = await fetchUserProfileImage(job.id_user);
+
+          jobItem.innerHTML = `
+          <div class="job-items">
+            <div class="company-img">
+              <a href="#"><img src="uploads/${profileImage}" alt=""></a>
+            </div>
+            <div class="job-tittle job-tittle2">
+              <h4>${job.title}</h4>
+              </a>
+              <ul>
+                <li>${userName}</li> 
+                <li><i class="fas fa-map-marker-alt"></i>${job.location}</li>
+                <li>R$ ${job.budget}</li>
+              </ul>
+            </div>
+          </div>
+          <div class="items-link items-link2 f-right">
+            <a href="job_details.html?jobId=${job.id}">Detalhes</a>
+            <span>${getTimeAgo(job.created_at)}</span>
+          </div>
+        `;
+
+          jobList.appendChild(jobItem);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // Call the function to fetch and render jobs
+    fetchJobs();
+  </script>
 </body>
 
 </html>
