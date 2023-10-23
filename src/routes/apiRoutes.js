@@ -12,7 +12,7 @@ router.use(cookieParser());
 // Import necessary controller functions
 const UserController = require('../controllers/UserController');
 const JobController = require('../controllers/JobController');
-const CategoryController = require('../controllers/CategoryController');
+const UserJobController = require('../controllers/UserJobController');
 
 
 router.get('/', (req, res) => {
@@ -36,9 +36,9 @@ router.get('/jobs/older', JobController.getOlderJobs);
 router.get('/jobs/highestValue', JobController.getHighestValue);
 router.get('/jobs/lowestValue', JobController.getLowestValue);
 
-// Category routes
-router.get('/category/:categoryId', CategoryController.getCategoryById);
-router.get('/categories', CategoryController.getAllCategories);
+// UserJob routes
+router.get('/userjobs/recent/:userId', UserJobController.getAllMostRecentJobsById);
+
 
 // Login route
 router.post('/login', UserController.login);

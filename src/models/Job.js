@@ -32,7 +32,8 @@ Job.init({
 }, {
   sequelize,
   modelName: 'Job',
-  timestamps: false, // Você pode ajustar isso conforme necessário
+  timestamps: false, 
 });
+
 
 module.exports = Job;

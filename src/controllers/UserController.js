@@ -13,36 +13,40 @@ exports.logout = (req, res) => {
   res.clearCookie('isUserLoggedIn');
   res.clearCookie('userId');
 
-  res.redirect('/index.html'); 
+  res.redirect('/index.html');
 };
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Verifique se o usuário existe no banco de dados
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
-
     if (!password) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
-    // Crie um token de autenticação
+
+
+    const idRole = user.id_role;
+
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // Adicione o token como cookie (opcional, se preferir usar cookies)
-    res.cookie('token', token, { httpOnly: true }); // Isso é opcional, você pode ajustar conforme necessário
+    res.cookie('token', token, { httpOnly: true });
     res.cookie('isUserLoggedIn', 'true');
     res.cookie('userId', user.id);
+    res.cookie('idRole', idRole);
 
 
-    // Redirecione o usuário para a página "dashboard.html"
-    res.redirect('/dashboard.html');
+    if (user.id_role === 1) {
+      res.redirect('/dashboard.html');
+    } else if (user.id_role === 2) {
+      res.redirect('/dashboard_candidate.html');
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro no servidor' });
