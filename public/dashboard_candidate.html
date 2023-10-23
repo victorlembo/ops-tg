@@ -10,6 +10,51 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="shortcut icon" type="image/x-icon" href="assets/img/favico.ico">
+  <style>
+    /* Estilo para a mensagem na caixa de confirmação */
+    .confirmation-message {
+      font-size: 16px;
+      color: #0B1C39;
+      /* Cor do texto */
+    }
+
+    /* Estilo para a caixa de confirmação */
+    .confirmation-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      text-align: center;
+    }
+
+    /* Estilo para o botão "OK" na caixa de confirmação */
+    .confirmation-ok-button {
+      background-color: #242B5E;
+      /* Cor de fundo do botão */
+      color: white;
+      /* Cor do texto do botão */
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    /* Estilo para o botão "Cancelar" na caixa de confirmação */
+    .confirmation-cancel-button {
+      background-color: #FB246A;
+      /* Cor de fundo do botão */
+      color: white;
+      /* Cor do texto do botão */
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 
   <!-- CSS here -->
   <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
@@ -89,57 +134,42 @@
                     </ul>
                   </nav>
                 </div>
+                <!-- Header-btn -->
                 <div class="header-btn d-none f-right d-lg-block">
-
+                  <a href="./index.html" class="btn head-btn1" onclick="logout()">Sair</a>
                 </div>
               </div>
-              <!-- Mobile Menu -->
-              <div class="col-12">
-                <div class="mobile_menu d-block d-lg-none"></div>
-              </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="col-12">
+              <div class="mobile_menu d-block d-lg-none"></div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Header End -->
+    </div>
+    <!-- Header End -->
   </header>
-  <div class="support-company-area fix pt-20">
-    <div class="online-cv cv-bg section-overly pt-90 pb-120" data-background="assets/img/gallery/cv_bg.jpg">
+  <main>
+
+    <!-- Job List Area Start -->
+    <div class="job-listing-area pt-120 pb-120">
       <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-xl-10">
-            <div class="cv-caption text-center">
-              <p class="pera1">Oportunidades Sorocaba</p>
-              <p class="pera2">Encontre oportunidades e entregue solucoes!</p>
-            </div>
+        <div class="row">
+          <!-- Right content -->
+          <div class="col-xl-12">
+            <!-- Featured_job_start -->
+            <section class="featured-job-area">
+              <div class="container">
+                <div class="job-list" id="jobList"></div>
+              </div>
+            </section>
+            <!-- Featured_job_end -->
           </div>
         </div>
       </div>
     </div>
-  </div>
-
-
-
-  <!-- Job List Area Start -->
-  <div class="job-listing-area pt-50 pb-50">
-    <div class="container">
-      <div class="row">
-
-        <!-- Right content -->
-        <div class="col-xl-12">
-          <!-- Featured_job_start -->
-          <section class="featured-job-area">
-            <div class="container">
-              <div class="job-list" id="jobList"></div>
-            </div>
-          </section>
-          <!-- Featured_job_end -->
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Job List Area End -->
-
+    <!-- Job List Area End -->
 
 
   </main>
@@ -220,57 +250,71 @@
   <!-- Jquery Plugins, main Jquery -->
   <script src="./assets/js/plugins.js"></script>
   <script src="./assets/js/main.js"></script>
-  <script src="./script.js"> </script>
-  <script src="menu.js"></script>
+  <script src="script.js"> </script>
 
   <script>
-    async function fetchJobs() {
+    async function fetchJobsUserId(userId) {
       try {
-        const response = await fetch('/api/jobs/recent');
+        const response = await fetch(`/api/userjobs/recent/${userId}`);
         const data = await response.json();
         const jobList = document.getElementById('jobList');
 
-        for (const job of data.jobs) {
-          const jobItem = document.createElement('div');
-          jobItem.classList.add('single-job-items', 'mb-30');
+        if (data.jobs.length === 0) {
+          displayNoJobsMessage();
+        } else {
+          for (const job of data.jobs) {
+            const jobItem = document.createElement('div');
+            jobItem.classList.add('single-job-items', 'mb-30');
 
-          // Fetch the user's name using the user ID
-          const userName = await fetchUserName(job.id_user);
+            const userName = await fetchUserName(job.id_user);
 
-          // Fetch the user's profile image using the user ID
-          const profileImage = await fetchUserProfileImage(job.id_user);
+            const profileImage = await fetchUserProfileImage(job.id_user);
 
-          jobItem.innerHTML = `
-          <div class="job-items">
-            <div class="company-img">
-              <a href="#"><img src="uploads/${profileImage}" alt=""></a>
-            </div>
-            <div class="job-tittle job-tittle2">
-              <h4>${job.title}</h4>
-              </a>
-              <ul>
-                <li>${userName}</li> 
-                <li><i class="fas fa-map-marker-alt"></i>${job.location}</li>
-                <li>R$ ${job.budget}</li>
-              </ul>
-            </div>
-          </div>
-          <div class="items-link items-link2 f-right">
-            <a href="job_details.html?jobId=${job.id}">Detalhes</a>
-            <span>${getTimeAgo(job.created_at)}</span>
-          </div>
-        `;
+            jobItem.innerHTML = `
+                    <div class="job-items">
+                        <div class="company-img">
+                            <a href="#"><img src="uploads/${profileImage}" alt=""></a>
+                        </div>
+                        <div class="job-tittle job-tittle2">
+                            <h4>${job.title}</h4>
+                            </a>
+                            <ul>
+                                <li>${userName}</li> 
+                                <li><i class="fas fa-map-marker-alt"></i>${job.location}</li>
+                                <li>R$ ${job.budget}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="items-link items-link2 f-right">
+                      <a href="job_details.html?jobId=${job.id}">Detalhes</a>
+                    </div>
+                `;
 
-          jobList.appendChild(jobItem);
+            jobList.appendChild(jobItem);
+          }
         }
       } catch (error) {
         console.error(error);
       }
     }
 
-    // Call the function to fetch and render jobs
-    fetchJobs();
+    function displayNoJobsMessage() {
+      const jobList = document.getElementById('jobList');
+      const messageDiv = document.createElement('div');
+
+      messageDiv.style.padding = '20px';
+      messageDiv.style.textAlign = 'center';
+
+      messageDiv.innerHTML = "Você ainda não se candidatou a nenhuma vaga. Clique <a href='index.html' style='color: blue; text-decoration: underline;'>aqui</a> para comecar!";
+
+      jobList.innerHTML = '';
+      jobList.appendChild(messageDiv);
+    }
+
+    fetchJobsUserId();
+
   </script>
+
 </body>
 
 </html>

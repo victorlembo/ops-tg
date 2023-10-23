@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
-const sequelize = require('./../routes/db'); 
+const sequelize = require('./../routes/db');
 
-class User extends Model {}
+class User extends Model { }
 
 User.init({
   id: {
@@ -26,6 +26,10 @@ User.init({
     type: DataTypes.STRING,
     defaultValue: null,
   },
+  id_role: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  }
 }, {
   sequelize,
   modelName: 'User',
