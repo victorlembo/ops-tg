@@ -1,5 +1,15 @@
 const UserJob = require('../models/UserJob');
 const Job = require('../models/Job');
+const express = require('express');
+const router = express.Router();
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
+router.use(express.json());
+router.use(cors());
+router.use(express.urlencoded({ extended: true }));
+router.use(cookieParser());
+
 
 exports.getAllMostRecentJobsById = async (req, res) => {
   const userId = req.cookies.userId;
@@ -11,10 +21,6 @@ exports.getAllMostRecentJobsById = async (req, res) => {
       },
       attributes: ['id_job'],
     });
-
-    if (!userJobs.length) {
-      return res.status(404).json({ error: 'No jobs found' });
-    }
 
     // 2. Execute a segunda consulta para buscar detalhes das vagas de emprego com base em jobIds
     const jobIds = userJobs.map((userJob) => userJob.id_job);

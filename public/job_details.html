@@ -167,14 +167,22 @@
                 <li>Orçamento : <span>R$ <span id="jobBudget">Loading...</span></span></li>
                 <li>Prazo final : <span id="jobDeadline">Loading...</span></li>
               </ul>
-              <!-- Dentro da seção "job post company" -->
               <div class="apply-btn2">
-                <label for="resumeUpload" class="btn">Enviar curriculo</label>
-                <input type="file" id="resumeUpload" accept=".pdf, .jpg, .png" style="display: none;">
+                <form action="/api/send-email" method="POST" enctype="multipart/form-data">
+                  <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                    <div>
+                      <label for="file" class="btn">Anexar</label>
+                      <input type="file" id="file" name="file" accept=".pdf, .jpg, .png" style="display: none;">
+                      <input type="hidden" name="jobId" id="jobId">
+                    </div>
+                    <div>
+                      <button type="submit" class="btn">Enviar</button>
+                    </div>
+                  </div>
+                </form>
               </div>
 
             </div>
-
           </div>
         </div>
       </div>
@@ -260,6 +268,38 @@
   <!-- Jquery Plugins, main Jquery -->
   <script src="./assets/js/plugins.js"></script>
   <script src="./assets/js/main.js"></script>
+  <script>
+    document.querySelector('form').addEventListener('submit', (e) => {
+      const allowedFormats = ['png', 'jpg', 'pdf'];
+      const fileInput = document.querySelector('input[type="file"]');
+
+      if (!fileInput.files.length) {
+        e.preventDefault(); // Prevent form submission
+        alert('Anexe um currículo antes de enviar.');
+      } else {
+        const fileName = fileInput.files[0].name;
+        const fileExtension = fileName.split('.').pop().toLowerCase();
+
+        if (!allowedFormats.includes(fileExtension)) {
+          e.preventDefault(); // Prevent form submission
+          alert('Formato de arquivo não suportado. Use apenas PNG, JPG ou PDF.');
+        }
+      }
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Obtenha o jobId da URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const jobId = urlParams.get('jobId');
+
+      // Configure o valor do campo "jobId" no formulário
+      const jobIdInput = document.getElementById('jobId');
+      jobIdInput.value = jobId;
+
+      console.log('Script loaded');
+    });
+  </script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       console.log('Script loaded');

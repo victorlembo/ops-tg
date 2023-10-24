@@ -12,7 +12,7 @@ app.use(express.static('public'));
 // Use API routes
 app.use('/api', apiRoutes);
 
-
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Start the server
 const PORT = process.env.PORT || 3000;
