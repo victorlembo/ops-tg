@@ -18,34 +18,34 @@ USE `ops`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `users`
+-- Table structure for table `userjobs`
 --
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `userjobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
+CREATE TABLE `userjobs` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `profile_image` varchar(255) DEFAULT NULL,
-  `id_role` int NOT NULL,
+  `id_user` int NOT NULL,
+  `id_job` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `id_role_idx` (`id_role`),
-  CONSTRAINT `id_role` FOREIGN KEY (`id_role`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `id_user` (`id_user`),
+  KEY `id_job` (`id_job`),
+  CONSTRAINT `userjobs_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`),
+  CONSTRAINT `userjobs_ibfk_2` FOREIGN KEY (`id_job`) REFERENCES `jobs` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `userjobs`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Anunciante 1','anunciante1@example.com','senha1','job-list1.png', 1),(2,'Anunciante 2','anunciante2@example.com','senha2','job-list2.png', 1),(3,'Anunciante 3','anunciante3@example.com','senha3','job-list3.png', 1);
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+LOCK TABLES `userjobs` WRITE;
+/*!40000 ALTER TABLE `userjobs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `userjobs` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

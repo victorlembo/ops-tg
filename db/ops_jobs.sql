@@ -34,11 +34,9 @@ CREATE TABLE `jobs` (
   `deadline` date NOT NULL,
   `created_at` date NOT NULL,
   `id_user` int DEFAULT NULL,
-  `id_category` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_category` (`id_category`),
-  CONSTRAINT `fk_category` FOREIGN KEY (`id_category`) REFERENCES `category` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
