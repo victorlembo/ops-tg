@@ -3,17 +3,27 @@ const router = express.Router();
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
-
-router.use(cors());
-router.use(express.urlencoded({ extended: true }));
-router.use(fileUpload());
-router.use(cookieParser());
-
-// Import necessary controller functions
 const UserController = require('../controllers/UserController');
 const JobController = require('../controllers/JobController');
 const UserJobController = require('../controllers/UserJobController');
+const SendEmail = require('../middleware/sendEmail');
 
+router.use(express.json());
+router.use(cors());
+router.use(express.urlencoded({ extended: true }));
+router.use(fileUpload({
+  createParentPath: true, // Cria diretórios pais, se não existirem
+  useTempFiles: false,     // Não usar arquivos temporários
+  safeFileNames: true,     // Evita nomes de arquivos inseguros
+  preserveExtension: true, // Mantém a extensão do arquivo original
+  limits: {                // Limites do upload (ajuste conforme necessário)
+    fileSize: 10 * 1024 * 1024,  // Limite de tamanho (10 MB)
+  },
+  uploadDir: 'src/mails',   // Diretório de destino para os arquivos
+}));
+
+router.use(cookieParser());
+router.use(express.static('mails'));
 
 router.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
@@ -39,6 +49,8 @@ router.get('/jobs/lowestValue', JobController.getLowestValue);
 // UserJob routes
 router.get('/userjobs/recent/:userId', UserJobController.getAllMostRecentJobsById);
 
+// Send Mail
+router.post('/send-email', SendEmail.sendMail);
 
 // Login route
 router.post('/login', UserController.login);

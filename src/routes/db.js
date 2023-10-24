@@ -14,6 +14,7 @@ const sequelize = new Sequelize(
   }
 );
 
+
 sequelize.options.define.ModelNamePlural = true;
 
 sequelize

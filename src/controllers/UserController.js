@@ -12,6 +12,7 @@ exports.logout = (req, res) => {
   res.clearCookie('token');
   res.clearCookie('isUserLoggedIn');
   res.clearCookie('userId');
+  res.clearCookie('idRole');
 
   res.redirect('/index.html');
 };
@@ -29,8 +30,6 @@ exports.login = async (req, res) => {
     if (!password) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
-
-
 
     const idRole = user.id_role;
 
@@ -82,6 +81,7 @@ exports.createUser = async (req, res) => {
       email: req.body.email,
       password: req.body.password,
       profile_image: profileImagePath,
+      id_role: req.body.role
     });
 
     res.redirect('/login.html');
