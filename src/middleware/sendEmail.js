@@ -28,12 +28,6 @@ router.use(fileUpload({
 
 router.use(express.static('mails'));
 
-// const oauth2Client = new OAuth2(
-//   "340627747022-d29ua2798cipk1geav2n46koubduccku.apps.googleusercontent.com",
-//   "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",
-//   "https://developers.google.com/oauthplayground" // Redirect URL
-// );
-
 const oauth2Client = new OAuth2(
     process.env.OAUTH_CLIENTID,
     process.env.OAUTH_CLIENT_SECRET,
