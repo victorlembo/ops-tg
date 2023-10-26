@@ -40,12 +40,9 @@ exports.login = async (req, res) => {
     res.cookie('userId', user.id);
     res.cookie('idRole', idRole);
 
+    res.status(200).json({ success: 'Autenticacao bem sucedida' });
 
-    if (user.id_role === 1) {
-      res.redirect('/dashboard.html');
-    } else if (user.id_role === 2) {
-      res.redirect('/dashboard_candidate.html');
-    }
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro no servidor' });

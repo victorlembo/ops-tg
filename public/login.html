@@ -7,7 +7,6 @@
     <title>Oportunidade Sorocaba</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="assets/img/favico.ico">
 
     <!-- CSS here -->
@@ -111,25 +110,30 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">Entrar</div>
-    
+
                         <div class="card-body">
                             <form method="POST" action="/api/login" enctype="multipart/form-data">
-                              
+
                                 <!-- Campo de Email -->
                                 <div class="form-group">
                                     <label for="email">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" required>
                                 </div>
-    
+
                                 <!-- Campo de Senha -->
                                 <div class="form-group">
                                     <label for="password">Senha</label>
                                     <input type="password" class="form-control" id="password" name="password" required>
                                 </div>
-    
+
+                                <!-- Erro Credenciais -->
+                                <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+
                                 <!-- Botão de Envio -->
-                                <button type="submit" class="btn btn-primary">Entrar</button>
-                                
+                                <div>
+                                    <button type="submit" class="btn btn-primary">Entrar</button>
+                                </div>
+
                             </form>
                         </div>
                     </div>
@@ -170,11 +174,11 @@
                                         <p>
                                             Copyright &copy;
                                             <script>document.write(new Date().getFullYear());</script> All rights
-                                            reserved 
+                                            reserved
                                         </p>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -216,7 +220,46 @@
     <!-- Jquery Plugins, main Jquery -->
     <script src="./assets/js/plugins.js"></script>
     <script src="./assets/js/main.js"></script>
+    <script>
+        const loginForm = document.querySelector('form');
+        const errorMessage = document.getElementById('error-message');
 
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.status === 200) {
+                const idRole = getCookie('idRole');
+                if (idRole === '1') {
+                    window.location.href = '/dashboard.html'
+                } else if (idRole === '2') {
+                    window.location.href = '/dashboard_candidate.html'
+                }
+            } else {
+                const data = await response.json();
+                errorMessage.textContent = data.error; // Preenche a div de erro com a mensagem
+                errorMessage.style.display = 'block'; // Exibe a div de erro
+            }
+        });
+    </script>
+
+    <script>
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+    </script>
 </body>
 
 </html>
