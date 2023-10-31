@@ -7,7 +7,6 @@
     <title>Oportunidade Sorocaba</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="assets/img/favico.ico">
 
     <!-- CSS here -->
@@ -116,37 +115,38 @@
                                     <label for="title">Título da Vaga</label>
                                     <input type="text" class="form-control" id="title" name="title" required>
                                 </div>
-    
+
                                 <!-- Campo de Descrição da Vaga -->
                                 <div class="form-group">
                                     <label for="description">Descrição da Vaga</label>
-                                    <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                                    <textarea class="form-control" id="description" name="description" rows="4"
+                                        required></textarea>
                                 </div>
-    
+
                                 <!-- Campo de Orçamento -->
                                 <div class="form-group">
                                     <label for="budget">Orçamento</label>
-                                    <input type="text" class="form-control" id="budget" name="budget" required>
+                                    <input type="number" class="form-control" id="budget" name="budget" min="0" step=".01" required>
                                 </div>
-    
+
                                 <!-- Campo de Habilidades Necessárias -->
                                 <div class="form-group">
                                     <label for="skills">Habilidades Necessárias</label>
                                     <input type="text" class="form-control" id="skills" name="skills" required>
                                 </div>
-    
+
                                 <!-- Campo de Localização -->
                                 <div class="form-group">
                                     <label for="location">Localização</label>
                                     <input type="text" class="form-control" id="location" name="location" required>
                                 </div>
-    
+
                                 <!-- Campo de Prazo -->
                                 <div class="form-group">
                                     <label for="deadline">Prazo</label>
                                     <input type="date" class="form-control" id="deadline" name="deadline" required>
                                 </div>
-    
+
                                 <!-- Campo de ID do Job (Oculto) -->
                                 <input type="hidden" id="jobId" name="jobId">
                                 <!-- Botão de Envio -->
@@ -192,10 +192,10 @@
                                         <p>
                                             Copyright &copy;
                                             <script>document.write(new Date().getFullYear());</script> All rights
-                                            reserved 
+                                            reserved
                                     </div>
                                 </div>
-                             
+
                             </div>
                         </div>
                     </div>
@@ -279,7 +279,7 @@
         fetchDataAndPopulateForm();
     </script>
     <script>
-         // Preenche o campo oculto com o ID do job
+        // Preenche o campo oculto com o ID do job
         document.getElementById("jobId").value = jobId;
 
         // Define o atributo 'action' do formulário com o URL correto

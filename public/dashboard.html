@@ -157,7 +157,7 @@
       <div class="container">
         <div class="row">
           <div class="col-xl-12">
-            <div class="items-link items-link2 f-right" >
+            <div class="items-link items-link2 f-right">
               <a href="job_register.html">+ Cadastrar Nova Oportunidade</a>
             </div>
           </div>
@@ -336,16 +336,19 @@
 
       const jobId = event.target.getAttribute('data-job-id');
 
-      // Substitua a função confirm padrão pelo seu estilo personalizado
       const confirmationDiv = document.createElement('div');
       confirmationDiv.classList.add('confirmation-box');
       confirmationDiv.innerHTML = `
   <p class="confirmation-message">Tem certeza de que deseja excluir esta vaga?</p>
-  <button class="confirmation-ok-button" id="confirmation-ok">Sim</button>
+  <div style="display: flex; justify-content: space-evenly">
   <button class="confirmation-cancel-button" id="confirmation-cancel">Cancelar</button>
+  <button class="confirmation-ok-button" id="confirmation-ok">Sim</button>
+  </div>
 `;
 
+
       document.body.appendChild(confirmationDiv);
+
 
 
       // Adicione um ouvinte de evento para os botões personalizados
@@ -361,7 +364,6 @@
         })
           .then(response => {
             if (response.status === 204) {
-              alert('Vaga excluída com sucesso!');
               window.location.reload();
             } else if (response.status === 404) {
               alert('Vaga não encontrado.');

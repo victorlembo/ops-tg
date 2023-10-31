@@ -7,7 +7,6 @@ exports.createJob = async (req, res) => {
     const createdJob = await Job.create(req.body);
     return res.status(201).json({ job: createdJob });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ error: 'Server error' });
   }
 };

@@ -53,13 +53,34 @@ const transporter = nodemailer.createTransport({
 
 exports.sendMail = async (req, res) => {
     const { jobId } = req.body;
-    const loggedUserId = req.cookies.userId;
+    const userId = req.cookies.userId;
+    const isLogged = req.cookies.isUserLoggedIn;
+    const loggedUser = await User.findByPk(userId);
+    const userRole = req.cookies.idRole;
 
-    const loggedUser = await User.findByPk(loggedUserId);
+    if (!isLogged && !userRole) {
+        return res.status(401).json({ error: 'Voce deve estar logado para realizar essa ação!' });
+    }
+
+    if (isLogged && userRole == '1') {
+        return res.status(401).json({ error: 'Voce deve estar logado em uma conta de candidato para realizar essa ação!' });
+    }
+
+    const userJobExists = await UserJob.findOne({
+        where: {
+            id_job: jobId,
+            id_user: userId,
+        },
+    });
+
+    if (userJobExists) {
+        return res.status(400).json({ error: 'Você já se candidatou a esta vaga.' });
+    }
 
     if (!req.files || !req.files.file) {
         return res.status(400).send('Arquivo não encontrado');
     }
+
     console.log("req.files:", req.files);
     const fileName = req.files.file;
 
@@ -132,12 +153,13 @@ exports.sendMail = async (req, res) => {
             } else {
                 console.log('E-mail enviado: ' + info.response);
                 UserJob.create({
-                    id_user: loggedUserId,
+                    id_user: userId,
                     id_job: jobId,
                 });
 
                 const successMessage = 'E-mail enviado com sucesso.';
-                res.send(`<script>alert("${successMessage}"); window.location.href = '/dashboard_candidate.html';</script>`);
+                return res.status(200).json({ successMessage });
+
             }
         });
     } catch (error) {

@@ -110,7 +110,7 @@
           <div class="col-xl-10">
             <div class="cv-caption text-center">
               <p class="pera1">Oportunidades Sorocaba</p>
-              <p class="pera2">Encontre oportunidades e entregue solucoes!</p>
+              <p class="pera2">Encontre oportunidades e entregue soluções!</p>
             </div>
           </div>
         </div>
@@ -233,6 +233,7 @@
         for (const job of data.jobs) {
           const jobItem = document.createElement('div');
           jobItem.classList.add('single-job-items', 'mb-30');
+          //jobItem.style.backgroundColor = '#f9faff';
 
           // Fetch the user's name using the user ID
           const userName = await fetchUserName(job.id_user);

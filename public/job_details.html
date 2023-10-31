@@ -24,6 +24,39 @@
   <link rel="stylesheet" href="assets/css/slick.css">
   <link rel="stylesheet" href="assets/css/nice-select.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* Estilo para a mensagem na caixa de confirmação */
+    .confirmation-message {
+      font-size: 16px;
+      color: #0B1C39;
+      /* Cor do texto */
+    }
+
+    /* Estilo para a caixa de confirmação */
+    .confirmation-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      text-align: center;
+    }
+
+    /* Estilo para o botão "Cancelar" na caixa de confirmação */
+    .confirmation-cancel-button {
+      background-color: #FB246A;
+      /* Cor de fundo do botão */
+      color: white;
+      /* Cor do texto do botão */
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
@@ -269,24 +302,59 @@
   <script src="./assets/js/plugins.js"></script>
   <script src="./assets/js/main.js"></script>
   <script>
-    document.querySelector('form').addEventListener('submit', (e) => {
-      const allowedFormats = ['png', 'jpg', 'pdf'];
+    const loginForm = document.querySelector('form');
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const jobId = document.getElementById('jobId').value;
+      const formData = new FormData();
+      formData.append('jobId', jobId);
+
       const fileInput = document.querySelector('input[type="file"]');
-
-      if (!fileInput.files.length) {
-        e.preventDefault(); // Prevent form submission
-        alert('Anexe um currículo antes de enviar.');
+      if (fileInput.files.length) {
+        formData.append('file', fileInput.files[0]);
       } else {
-        const fileName = fileInput.files[0].name;
-        const fileExtension = fileName.split('.').pop().toLowerCase();
+        displayConfirmationMessage('Anexe um currículo antes de enviar.');
+        return; // Avoid submission without an attachment
+      }
 
-        if (!allowedFormats.includes(fileExtension)) {
-          e.preventDefault(); // Prevent form submission
-          alert('Formato de arquivo não suportado. Use apenas PNG, JPG ou PDF.');
+      try {
+        const response = await fetch('/api/send-email', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          displayConfirmationMessage(data.successMessage);
+        } else {
+          const errorData = await response.json();
+          displayConfirmationMessage(errorData.error);
         }
+      } catch (error) {
+        console.error(error);
+        displayConfirmationMessage('Ocorreu um erro ao enviar a solicitação.');
       }
     });
+
+    function displayConfirmationMessage(message) {
+      const confirmationDiv = document.createElement('div');
+      confirmationDiv.classList.add('confirmation-box');
+      confirmationDiv.innerHTML = `
+    <p class="confirmation-message">${message}</p>
+    <button class="confirmation-cancel-button">Fechar</button>
+  `;
+
+      const closeButton = confirmationDiv.querySelector('.confirmation-cancel-button');
+      closeButton.addEventListener('click', () => {
+        document.body.removeChild(confirmationDiv);
+      });
+
+      document.body.appendChild(confirmationDiv);
+    }
+
   </script>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Obtenha o jobId da URL
